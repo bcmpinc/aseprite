@@ -288,6 +288,7 @@ Engine::Engine()
   setfield_integer(L, "ADDITION", doc::BlendMode::ADDITION);
   setfield_integer(L, "SUBTRACT", doc::BlendMode::SUBTRACT);
   setfield_integer(L, "DIVIDE", doc::BlendMode::DIVIDE);
+  setfield_integer(L, "GRAIN_MERGE", doc::BlendMode::GRAIN_MERGE);
   lua_pop(L, 1);
 
   lua_newtable(L);

@@ -81,6 +81,17 @@ inline uint32_t blend_divide(uint32_t b, uint32_t s)
     return DIV_UN8(b, s); // return b / s
 }
 
+inline uint32_t blend_grain_merge(uint32_t b, uint32_t s, int opacity)
+{
+  int r = b + (s-128) * opacity / 65025;
+  if (r <= 0)
+    return 0;
+  else if (r > 255)
+    return 255;
+  else
+    return r;
+}
+
 inline uint32_t blend_color_dodge(uint32_t b, uint32_t s)
 {
   if (b == 0)
@@ -523,6 +534,15 @@ color_t rgba_blender_divide(color_t backdrop, color_t src, int opacity)
   return rgba_blender_normal(backdrop, src, opacity);
 }
 
+color_t rgba_blender_grain_merge(color_t backdrop, color_t src, int opacity)
+{
+  opacity *= rgba_geta(src);
+  int r = blend_grain_merge(rgba_getr(backdrop), rgba_getr(src), opacity);
+  int g = blend_grain_merge(rgba_getg(backdrop), rgba_getg(src), opacity);
+  int b = blend_grain_merge(rgba_getb(backdrop), rgba_getb(src), opacity);
+  return rgba(r, g, b, 0) | (backdrop & rgba_a_mask);
+}
+
 // New Blender Methods:
 RGBA_BLENDER_N(multiply)
 RGBA_BLENDER_N(screen)
@@ -731,6 +751,13 @@ color_t graya_blender_divide(color_t backdrop, color_t src, int opacity)
   return graya_blender_normal(backdrop, src, opacity);
 }
 
+color_t graya_blender_grain_merge(color_t backdrop, color_t src, int opacity)
+{
+  opacity *= graya_geta(src);
+  int v = blend_grain_merge(graya_getv(backdrop), graya_getv(src), opacity);
+  return graya(v, 0) | (backdrop & rgba_a_mask);
+}
+
 GRAYA_BLENDER_N(multiply)
 GRAYA_BLENDER_N(screen)
 GRAYA_BLENDER_N(overlay)
@@ -786,6 +813,7 @@ BlendFunc get_rgba_blender(BlendMode blendmode, const bool newBlend)
     case BlendMode::ADDITION:       return newBlend? rgba_blender_addition_n: rgba_blender_addition;
     case BlendMode::SUBTRACT:       return newBlend? rgba_blender_subtract_n: rgba_blender_subtract;
     case BlendMode::DIVIDE:         return newBlend? rgba_blender_divide_n: rgba_blender_divide;
+    case BlendMode::GRAIN_MERGE:    return rgba_blender_grain_merge;
   }
   ASSERT(false);
   return rgba_blender_src;
@@ -820,6 +848,7 @@ BlendFunc get_graya_blender(BlendMode blendmode, const bool newBlend)
     case BlendMode::ADDITION:       return newBlend? graya_blender_exclusion_n: graya_blender_addition;
     case BlendMode::SUBTRACT:       return newBlend? graya_blender_subtract_n: graya_blender_subtract;
     case BlendMode::DIVIDE:         return newBlend? graya_blender_divide_n: graya_blender_divide;
+    case BlendMode::GRAIN_MERGE:    return graya_blender_grain_merge;
   }
   ASSERT(false);
   return graya_blender_src;

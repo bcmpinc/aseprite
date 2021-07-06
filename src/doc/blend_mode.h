@@ -41,7 +41,8 @@ namespace doc {
     HSL_LUMINOSITY  = 15,
     ADDITION        = 16,
     SUBTRACT        = 17,
-    DIVIDE          = 18
+    DIVIDE          = 18,
+    GRAIN_MERGE     = 19
   };
 
   std::string blend_mode_to_string(BlendMode blendMode);

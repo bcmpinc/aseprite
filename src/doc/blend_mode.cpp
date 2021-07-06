@@ -34,6 +34,7 @@ std::string blend_mode_to_string(BlendMode blendMode)
     case BlendMode::ADDITION: return "addition";
     case BlendMode::SUBTRACT: return "subtract";
     case BlendMode::DIVIDE: return "divide";
+    case BlendMode::GRAIN_MERGE: return "grain_merge";
     default: return "unknown";
   }
 }

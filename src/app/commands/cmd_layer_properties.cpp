@@ -98,6 +98,8 @@ public:
     mode()->addItem(new BlendModeItem("Saturation", doc::BlendMode::HSL_SATURATION));
     mode()->addItem(new BlendModeItem("Color", doc::BlendMode::HSL_COLOR));
     mode()->addItem(new BlendModeItem("Luminosity", doc::BlendMode::HSL_LUMINOSITY));
+    mode()->addItem(new SeparatorInView);
+    mode()->addItem(new BlendModeItem("Grain Merge", doc::BlendMode::GRAIN_MERGE));
 
     name()->Change.connect([this]{ onStartTimer(); });
     mode()->Change.connect([this]{ onStartTimer(); });
